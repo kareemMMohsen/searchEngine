@@ -32,6 +32,7 @@ public class Crawler implements Runnable {
     }
 
     public static void main(String[] args) {
+      // comment this try block to enable the functionality of completing from where it left off after being stopped
         try {
             dbH.Sql("DELETE FROM sites;");
             dbH.Sql("DELETE FROM unsites;");
@@ -40,6 +41,8 @@ public class Crawler implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter number of threads for the crawler: ");
