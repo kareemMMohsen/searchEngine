@@ -34,10 +34,10 @@ public class Crawler implements Runnable {
     public static void main(String[] args) {
       // comment this try block to enable the functionality of completing from where it left off after being stopped
         try {
-            dbH.Sql("DELETE FROM sites;");
-            dbH.Sql("DELETE FROM unsites;");
-            dbH.Sql("DELETE FROM token;");
-            dbH.Sql("DELETE FROM position;");
+             dbH.Sql("TRUNCATE sites;");
+             dbH.Sql("TRUNCATE unsites;");
+             dbH.Sql("TRUNCATE token;");
+             dbH.Sql("TRUNCATE position;");
         } catch (Exception e) {
             e.printStackTrace();
         }
