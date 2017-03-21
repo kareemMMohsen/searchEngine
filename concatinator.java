@@ -16,12 +16,16 @@ import org.jsoup.nodes.Element;
  */
 public class concatinator {
 
-    public static StringBuilder run(StringBuilder sb) {
+   public static StringBuilder run(StringBuilder sb) {
         String html = sb.toString();
         Document doc = Jsoup.parse(html);
         //Element link = doc.select("a").first();
-
-        String text = doc.body().text(); // "An example link"
+        Element taglang = doc.select("html").first();
+        //System.out.println();
+        String text = "";
+        if((taglang.attr("lang")).toLowerCase().contains(("en"))){
+            text = doc.text();
+        }
         //System.out.println(text);
         sb = new StringBuilder(text);
         return sb;
