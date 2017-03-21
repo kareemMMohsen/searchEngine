@@ -107,7 +107,7 @@ public class Project {
     public void run(StringBuilder sb , int ID) {
 
          
-        List<String> list=parser.run(sb) ;
+        List<String> list=(new parser()).run(sb) ;
 
          
          indexer a=new indexer();
