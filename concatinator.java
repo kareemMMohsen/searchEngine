@@ -20,11 +20,9 @@ public class concatinator {
         String html = sb.toString();
         Document doc = Jsoup.parse(html);
         //Element link = doc.select("a").first();
-        Element taglang = doc.select("html").first();
-        String text = "";
-        if((taglang.attr("lang")).toLowerCase().contains(("en"))){
-            text = doc.body().text();
-        }
+
+        String text = doc.body().text(); // "An example link"
+        //System.out.println(text);
         sb = new StringBuilder(text);
         return sb;
     }
