@@ -91,6 +91,8 @@ public class Crawler implements Runnable {
                 Elements links = doc.select("a[href]");
                 for (Element i : links) {
                     String url_temp = i.attr("abs:href");
+                    if(url_temp.length()==0)
+                        continue;
                     url_temp = TrimURL(url_temp);
                     InsertUrlUnexplored(url_temp);
                 }
@@ -165,6 +167,7 @@ public class Crawler implements Runnable {
     }
 
     static String TrimURL(String url) {
+        
 
         if (url.charAt(url.length() - 1) == '/') {
             url = url.substring(0, url.length() - 1);
