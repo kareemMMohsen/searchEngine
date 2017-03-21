@@ -1,0 +1,190 @@
+package searchengine;
+
+import java.net.URL;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import java.io.IOException;
+import com.trigonic.jrobotx.RobotExclusion;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+//version 5.1
+// Added Robot Exclusion Standard using jrobotx library
+//Edited functions and added new ones
+
+public class Crawler implements Runnable {
+
+    static dbHandler dbH = new dbHandler();
+    static RobotExclusion robotExclusion = new RobotExclusion();
+    static int uniqueUrl;
+    static int maxUrl, cnt;
+
+    @Override
+    public void run() {
+        maxUrl = 10000;
+        while (true) {
+            ++cnt;
+            System.out.println(cnt);
+            ExploreUrl();
+            try {
+                dbH.Sql("DELETE FROM sites;");
+                dbH.Sql("DELETE FROM unsites;");
+                dbH.Sql("DELETE FROM token;");
+                dbH.Sql("DELETE FROM position;");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public static void main(String[] args) {
+        try {
+            dbH.Sql("DELETE FROM sites;");
+            dbH.Sql("DELETE FROM unsites;");
+            dbH.Sql("DELETE FROM token;");
+            dbH.Sql("DELETE FROM position;");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter number of threads for the crawler: ");
+        int threadNum = scanner.nextInt();
+        Thread T[] = new Thread[threadNum];
+        InsertUrlUnexplored("https://en.wikipedia.org/wiki/Nami");
+
+        for (int i = 0; i < threadNum; i++) {
+
+            T[i] = new Thread(new Crawler(), Integer.toString(i));
+            T[i].start();
+        }
+
+    }
+
+    static void ExploreUrl() {
+        while (true) {
+            String url = getNextUnexplored();
+            if (url.equals("")) {
+                continue;
+            }
+
+            try {
+                URL x = new URL(url);
+                if (UrlFound(url) || (!robotExclusion.allows(x, ""))) {
+                    continue;
+                }
+                if (Stop()) {
+                    return;
+                }
+            } catch (Exception e) {
+            }
+            System.out.println(url);
+            int id = InsertUrlExplored(url);
+            try {
+                Document doc = Jsoup.connect(url).get();
+                StringBuilder doc_sb = new StringBuilder(doc.toString());
+                Project.run(doc_sb, id);
+                Elements links = doc.select("a[href]");
+                for (Element i : links) {
+                    String url_temp = i.attr("abs:href");
+                    url_temp = TrimURL(url_temp);
+                    InsertUrlUnexplored(url_temp);
+                }
+            } catch (IOException e) {
+                //    e.printStackTrace();
+            }
+
+        }
+    }
+
+    static synchronized void InsertUrlUnexplored(String url) {
+        try {
+            String sql0 = "SELECT * FROM sites WHERE URL='" + url + "';";
+            ResultSet s1 = dbH.SqlQuery(sql0);
+            if (s1.next()) {
+                return;
+            }
+            String sql = "INSERT INTO unsites (URL) VALUES ('" + url + "');";
+            dbH.Sql(sql);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+    }
+
+    static synchronized String getNextUnexplored() {
+        String Sql = "SELECT URL FROM unsites;";
+        try {
+            ResultSet url = dbH.SqlQuery(Sql);
+            if (!url.next()) {
+                return "";
+            }
+            RemoveUrlUnexplored(url.getString("URL"));
+            return url.getString("URL");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    static int InsertUrlExplored(String url) {
+        try {
+            String sql = "INSERT INTO sites (URL) VALUES ('" + url + "');";
+            dbH.Sql(sql);
+            String sql2 = "SELECT ID FROM sites where URL='" + url + "';";
+            ResultSet url_r = dbH.SqlQuery(sql2);
+            url_r.next();
+            return url_r.getInt(1);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        return 0;
+    }
+
+    static void RemoveUrlUnexplored(String url) {
+        try {
+            String sql = "DELETE FROM unsites WHERE URL ='" + url + "';";
+            dbH.Sql(sql);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+
+    }
+
+    static boolean UrlFound(String url) {
+        try {
+            ResultSet st = dbH.SqlQuery("SELECT * FROM sites WHERE URL ='" + url + "';");
+            return (st.next());
+        } catch (SQLException e) {
+            //e.printStackTrace();
+        }
+        return false;
+    }
+
+    static String TrimURL(String url) {
+
+        if (url.charAt(url.length() - 1) == '/') {
+            url = url.substring(0, url.length() - 1);
+        }
+        int hashIdx = url.indexOf('#');
+        if (hashIdx != -1) {
+            return url.substring(0, hashIdx);
+        }
+        return url;
+    }
+
+    static boolean Stop() {
+        String sql = "SELECT COUNT(*) FROM sites;";
+        try {
+            ResultSet query_result = dbH.SqlQuery(sql);
+            query_result.next();
+            return (query_result.getInt(1) >= maxUrl);
+        } catch (SQLException e) {
+        }
+        return false;
+    }
+
+}
