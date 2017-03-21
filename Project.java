@@ -21,7 +21,7 @@ class indexer {
 
     List<String> List ;
     int pageID;
-    static dbHandler db = new dbHandler ();
+    dbHandler db = new dbHandler ();
 
     public void sendList(List<String> list)
     {
@@ -68,7 +68,7 @@ class indexer {
         }
     }
     
-    static boolean PoistionFound(int pageID, int position) {
+     boolean PoistionFound(int pageID, int position) {
      try {
             String query="SELECT * FROM position WHERE  Site_ID =" + pageID + " AND Position =" + position ;
             ResultSet st = db.SqlQuery(query);
@@ -80,7 +80,7 @@ class indexer {
     }
     
    
-   static boolean TokenFound(String list) {
+    boolean TokenFound(String list) {
      try {
             ResultSet st = db.SqlQuery("SELECT * FROM token WHERE Token ='" + list + "';");
             return (st.next());
@@ -104,7 +104,7 @@ public class Project {
 
    
 
-    public static void run(StringBuilder sb , int ID) {
+    public void run(StringBuilder sb , int ID) {
 
          
         List<String> list=parser.run(sb) ;
