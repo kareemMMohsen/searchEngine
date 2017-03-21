@@ -23,6 +23,7 @@ public class Crawler implements Runnable {
     static RobotExclusion robotExclusion = new RobotExclusion();
     static int uniqueUrl;
     static int maxUrl, cnt;
+    final static Project p = new Project();
 
     @Override
     public void run() {
@@ -100,7 +101,6 @@ public class Crawler implements Runnable {
             try {
                 Document doc = Jsoup.connect(url).get();
                 StringBuilder doc_sb = new StringBuilder(doc.toString());
-                Project p = new Project();
                 synchronized (p) {
                     p.run(doc_sb, id);
                 }
