@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 
 //version 1.0
-
+//omer
 class indexer {
 
     List<String> List ;
