@@ -11,6 +11,8 @@ import com.trigonic.jrobotx.RobotExclusion;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //version 5.1
 // Added Robot Exclusion Standard using jrobotx library
 //Edited functions and added new ones
@@ -25,19 +27,7 @@ public class Crawler implements Runnable {
     @Override
     public void run() {
         maxUrl = 10000;
-        while (true) {
-            ++cnt;
-            System.out.println(cnt);
-            ExploreUrl();
-            try {
-                dbH.Sql("DELETE FROM sites;");
-                dbH.Sql("DELETE FROM unsites;");
-                dbH.Sql("DELETE FROM token;");
-                dbH.Sql("DELETE FROM position;");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        ExploreUrl();
 
     }
 
@@ -55,14 +45,36 @@ public class Crawler implements Runnable {
         System.out.println("Enter number of threads for the crawler: ");
         int threadNum = scanner.nextInt();
         Thread T[] = new Thread[threadNum];
-        InsertUrlUnexplored("https://en.wikipedia.org/wiki/Nami");
+        int cnt = 0;
 
-        for (int i = 0; i < threadNum; i++) {
+        while (true) {
+            ++cnt;
+            System.out.println("Crawl #" + cnt);
 
-            T[i] = new Thread(new Crawler(), Integer.toString(i));
-            T[i].start();
+            InsertUrlUnexplored("http://dmoztools.net");
+            for (int i = 0; i < threadNum; i++) {
+
+                T[i] = new Thread(new Crawler(), Integer.toString(i));
+                T[i].start();
+            }
+            for (int i = 0; i < threadNum; i++) {
+
+                try {
+                    T[i].join();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Crawler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            try {
+                dbH.Sql("DELETE FROM sites;");
+                dbH.Sql("DELETE FROM unsites;");
+                dbH.Sql("DELETE FROM token;");
+                dbH.Sql("DELETE FROM position;");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
-
     }
 
     static void ExploreUrl() {
@@ -91,8 +103,9 @@ public class Crawler implements Runnable {
                 Elements links = doc.select("a[href]");
                 for (Element i : links) {
                     String url_temp = i.attr("abs:href");
-                    if(url_temp.length()==0)
+                    if (url_temp.length() == 0) {
                         continue;
+                    }
                     url_temp = TrimURL(url_temp);
                     InsertUrlUnexplored(url_temp);
                 }
@@ -103,7 +116,7 @@ public class Crawler implements Runnable {
         }
     }
 
-    static synchronized void InsertUrlUnexplored(String url) {
+    static void InsertUrlUnexplored(String url) {
         try {
             String sql0 = "SELECT * FROM sites WHERE URL='" + url + "';";
             ResultSet s1 = dbH.SqlQuery(sql0);
@@ -167,7 +180,6 @@ public class Crawler implements Runnable {
     }
 
     static String TrimURL(String url) {
-        
 
         if (url.charAt(url.length() - 1) == '/') {
             url = url.substring(0, url.length() - 1);
