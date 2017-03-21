@@ -1,18 +1,14 @@
 package searchengine;
 
-import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import java.io.IOException;
 import com.trigonic.jrobotx.RobotExclusion;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.log4j.BasicConfigurator;
 //version 5.1
 // Added Robot Exclusion Standard using jrobotx library
 //Edited functions and added new ones
@@ -42,7 +38,7 @@ public class Crawler implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        BasicConfigurator.configure(); 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter number of threads for the crawler: ");
         int threadNum = scanner.nextInt();
