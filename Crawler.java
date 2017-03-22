@@ -35,14 +35,14 @@ public class Crawler implements Runnable {
     public static void main(String[] args) {
         // comment this try block to enable the functionality of completing from where it left off after being stopped
         try {
-             dbH.Sql("TRUNCATE sites;");
-                dbH.Sql("TRUNCATE unsites;");
-                dbH.Sql("TRUNCATE token;");
-                dbH.Sql("TRUNCATE position;");
+            dbH.Sql("TRUNCATE sites;");
+            dbH.Sql("TRUNCATE unsites;");
+            dbH.Sql("TRUNCATE token;");
+            dbH.Sql("TRUNCATE position;");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        BasicConfigurator.configure(); 
+        BasicConfigurator.configure();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter number of threads for the crawler: ");
         int threadNum = scanner.nextInt();
@@ -77,6 +77,16 @@ public class Crawler implements Runnable {
             }
 
         }
+    }
+
+    boolean checkPage(String url) {
+        try {
+            Jsoup.connect(url).get();
+        } catch (IOException e) {
+            return false;
+
+        }
+        return true;
     }
 
     static void ExploreUrl() {
