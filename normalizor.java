@@ -258,6 +258,10 @@ public class normalizor {
             }
 
         }
+        if (acc.length() > 0) {
+            normal.add(acc.toString());
+            acc = new StringBuilder();
+        }
         return normal;
     }
 }
