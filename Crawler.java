@@ -26,7 +26,7 @@ public class Crawler implements Runnable {
 
     @Override
     public void run() {
-        maxUrl = 10000;
+        maxUrl = 30;
         ExploreUrl();
 
     }
@@ -52,7 +52,7 @@ public class Crawler implements Runnable {
             ++cnt;
             System.out.println("Crawl #" + cnt);
 
-            InsertUrlUnexplored("http://yahoo.com");
+            InsertUrlUnexplored("http://localhost/seeds.html");
             for (int i = 0; i < threadNum; i++) {
 
                 T[i] = new Thread(new Crawler(), Integer.toString(i));
@@ -105,14 +105,14 @@ public class Crawler implements Runnable {
 
             try {
                 URL x = new URL(url);
-                if (UrlFound(url) || (checkPage(url) && robotExclusion.allows(x, ""))) {
+                if (UrlFound(url) || (checkPage(url) && !robotExclusion.allows(x, ""))) {
                     continue;
                 }
 
+            System.out.println(url);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(url);
             int id = InsertUrlExplored(url);
             try {
                 Document doc = Jsoup.connect(url).get();
@@ -167,7 +167,7 @@ public class Crawler implements Runnable {
         return "";
     }
 
-    static int InsertUrlExplored(String url) {
+    static  int InsertUrlExplored(String url) {
 
         try {
             String sql = "INSERT INTO sites (URL) VALUES ('" + url + "');";
