@@ -96,19 +96,22 @@ public class Crawler implements Runnable {
 
     static void ExploreUrl() {
         while (true) {
+     //       System.out.println(Thread.currentThread().getName());
             String url = getNextUnexplored();
+             if (Stop()) {
+                    return;
+                }
             if (url.equals("")) {
                 continue;
             }
-
+         
             try {
                 URL x = new URL(url);
-                if (UrlFound(url) || !(checkPage(url) && robotExclusion.allows(x, ""))) {
+                if (UrlFound(url) || (checkPage(url) && robotExclusion.allows(x, ""))) {
                     continue;
                 }
-                if (Stop()) {
-                    return;
-                }
+               
+  System.out.println(Thread.currentThread().getName());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -117,8 +120,8 @@ public class Crawler implements Runnable {
             try {
                 Document doc = Jsoup.connect(url).get();
                 StringBuilder doc_sb = new StringBuilder(doc.toString());
-                Project p = new Project();
-                    p.run(doc_sb, id);
+              //  Project p = new Project();
+               //     p.run(doc_sb, id);
                 
                 Elements links = doc.select("a[href]");
                 for (Element i : links) {
@@ -137,7 +140,7 @@ public class Crawler implements Runnable {
     }
 
     static void InsertUrlUnexplored(String url) {
-        synchronized (dbH) {
+       
             try {
                 String sql0 = "SELECT * FROM sites WHERE URL='" + url + "';";
                 ResultSet s1 = dbH.SqlQuery(sql0);
@@ -149,11 +152,11 @@ public class Crawler implements Runnable {
             } catch (Exception e) {
                 //e.printStackTrace();
             }
-        }
+        
     }
 
     static synchronized String getNextUnexplored() {
-        String Sql = "SELECT URL FROM `unsites` ORDER BY ID LIMIT 1;";
+        String Sql = "SELECT URL FROM unsites ORDER BY ID LIMIT 1;";
         try {
             ResultSet url = dbH.SqlQuery(Sql);
             if (!url.next()) {
@@ -168,7 +171,7 @@ public class Crawler implements Runnable {
     }
 
     static int InsertUrlExplored(String url) {
-        synchronized (dbH) {
+        
             try {
                 String sql = "INSERT INTO sites (URL) VALUES ('" + url + "');";
                 dbH.Sql(sql);
@@ -179,7 +182,7 @@ public class Crawler implements Runnable {
             } catch (Exception e) {
                 //e.printStackTrace();
             }
-        }
+        
         return 0;
     }
 
