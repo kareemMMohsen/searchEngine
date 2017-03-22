@@ -1,0 +1,2 @@
+SELECT * FROM `position` WHERE Site_ID=1
+SELECT * FROM `position` WHERE Site_ID=250
