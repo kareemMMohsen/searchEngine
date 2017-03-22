@@ -19,20 +19,21 @@ import java.sql.PreparedStatement;
 //omer
 class indexer {
 
-    List<String> List ;
-    int pageID;
-    dbHandler db = new dbHandler ();
+    static List<String> List ;
+    static int pageID;
+    static dbHandler db = new dbHandler ();
 
-    public void sendList(List<String> list)
+   static public void sendList(List<String> list)
     {
         List=list;
     }
-    public void sendID(int ID)
+    static public void sendID(int ID)
     {
         pageID=ID;
     }
-    public void Update_tables()
+   public  static  void Update_tables()
     {
+        int m=0;
         for (int i = 0; i < List.size(); i++) 
         {
             
@@ -68,7 +69,7 @@ class indexer {
         }
     }
     
-     boolean PoistionFound(int pageID, int position) {
+     static boolean PoistionFound(int pageID, int position) {
      try {
             String query="SELECT * FROM position WHERE  Site_ID =" + pageID + " AND Position =" + position ;
             ResultSet st = db.SqlQuery(query);
@@ -80,7 +81,7 @@ class indexer {
     }
     
    
-    boolean TokenFound(String list) {
+   static boolean TokenFound(String list) {
      try {
             ResultSet st = db.SqlQuery("SELECT * FROM token WHERE Token ='" + list + "';");
             return (st.next());
@@ -90,7 +91,7 @@ class indexer {
         return false;
     }
 
-    public void Update_tables(List<String> List,int ID)
+    static synchronized public void Update_tables(List<String> List,int ID)
     {
        sendList(List);
        sendID(ID);
@@ -108,11 +109,9 @@ public class Project {
 
          
         List<String> list=(new parser()).run(sb) ;
-
-         
-         indexer a=new indexer();
-         a.Update_tables(list,ID);
-       
+        indexer.Update_tables(list,ID);
+        
+        
     }
 
 }
