@@ -79,7 +79,12 @@ public class Crawler implements Runnable {
         }
     }
 
-    boolean checkPage(String url) {
+    static boolean checkPage(String url) {
+        if (url.indexOf('/', 8) != -1) {
+            url = url.substring(0, url.indexOf('/', 8) - 1);
+        }
+        url = url + "/robots.txt";
+
         try {
             Jsoup.connect(url).get();
         } catch (IOException e) {
@@ -98,13 +103,14 @@ public class Crawler implements Runnable {
 
             try {
                 URL x = new URL(url);
-                if (UrlFound(url) || (!robotExclusion.allows(x, ""))) {
+                if (UrlFound(url) || !(checkPage(url) && robotExclusion.allows(x, ""))) {
                     continue;
                 }
                 if (Stop()) {
                     return;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
             }
             System.out.println(url);
             int id = InsertUrlExplored(url);
