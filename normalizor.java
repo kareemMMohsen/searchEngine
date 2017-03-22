@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class normalizor {
 
-    public static List<String> run(StringBuilder sb) {
+    public List<String> run(StringBuilder sb) {
         List<String> normal = new ArrayList<>();
         StringBuilder acc = new StringBuilder();
         for (int i = 0; i < sb.length(); i++) {
