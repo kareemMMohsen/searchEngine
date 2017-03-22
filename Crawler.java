@@ -53,7 +53,7 @@ public class Crawler implements Runnable {
             ++cnt;
             System.out.println("Crawl #" + cnt);
 
-            InsertUrlUnexplored("http://dmoztools.net");
+            InsertUrlUnexplored("http://yahoo.com");
             for (int i = 0; i < threadNum; i++) {
 
                 T[i] = new Thread(new Crawler(), Integer.toString(i));
