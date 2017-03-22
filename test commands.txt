@@ -1,4 +1,3 @@
 SELECT * FROM `position` WHERE Site_ID=1
 SELECT * FROM `position` WHERE Site_ID=250
-SELECT * FROM `token` where `Token`="empti"
-SELECT * FROM `position` where `Token_ID`=???
+SELECT * FROM `position` where `Token_ID`=(SELECT ID FROM `token` where `Token`="empti")
