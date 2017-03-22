@@ -96,7 +96,6 @@ public class Crawler implements Runnable {
 
     static void ExploreUrl() {
         while (true) {
-     //       System.out.println(Thread.currentThread().getName());
             String url = getNextUnexplored();
              if (Stop()) {
                     return;
@@ -111,7 +110,6 @@ public class Crawler implements Runnable {
                     continue;
                 }
                
-  System.out.println(Thread.currentThread().getName());
             } catch (Exception e) {
                 e.printStackTrace();
             }
