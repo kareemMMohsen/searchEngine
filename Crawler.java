@@ -26,7 +26,7 @@ public class Crawler implements Runnable {
 
     @Override
     public void run() {
-        maxUrl = 30;
+        maxUrl = 5000;
         ExploreUrl();
 
     }
