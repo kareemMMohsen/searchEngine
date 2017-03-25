@@ -86,6 +86,7 @@ public class Crawler implements Runnable {
         Project p = new Project();
 
         while (true) {
+            System.gc();
             String url = getNextUnexplored();
             if (Stop()) {
                 return;
