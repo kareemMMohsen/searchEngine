@@ -81,6 +81,7 @@ public class Crawler implements Runnable {
             return false;
 
         }
+
         return true;
     }
 
@@ -97,7 +98,8 @@ public class Crawler implements Runnable {
             }
             try {
                 URL x = new URL(url);
-                if (UrlFound(url) || (checkPage(url) && !robotExclusion.allows(x, ""))) {
+                if (UrlFound(url) || !robotExclusion.allows(x, "")) {
+                    System.out.println("XX");
                     continue;
                 }
 
