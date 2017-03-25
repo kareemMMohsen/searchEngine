@@ -15,9 +15,9 @@ public class dbHandler {
             String url = "jdbc:mysql://localhost/crawler?autoReconnect=true&useSSL=false";
             conn = DriverManager.getConnection(url, "root", "");
         } catch (SQLException e) {
-             e.printStackTrace();
+             
         } catch (ClassNotFoundException e) {
-             e.printStackTrace();
+             
         }
     }
 
