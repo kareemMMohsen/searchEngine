@@ -83,7 +83,6 @@ public class Crawler implements Runnable {
             try {
                 URL x = new URL(url);
                 if (UrlFound(url) || !robotExclusion.allows(x, "")) {
-                    System.out.println("XX");
                     continue;
                 }
 
