@@ -26,28 +26,20 @@ public class Crawler implements Runnable {
 
     @Override
     public void run() {
-        maxUrl = 5000;
+
         ExploreUrl();
 
     }
 
     public static void main(String[] args) {
-        // comment this try block to enable the functionality of completing from where it left off after being stopped
-        try {
-            dbH.Sql("TRUNCATE sites;");
-            dbH.Sql("TRUNCATE unsites;");
-            dbH.Sql("TRUNCATE token;");
-            dbH.Sql("TRUNCATE position;");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         BasicConfigurator.configure();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter number of threads for the crawler: ");
         int threadNum = scanner.nextInt();
         Thread T[] = new Thread[threadNum];
         int cnt = 0;
-
+        maxUrl = 5000;
         while (true) {
             ++cnt;
             System.out.println("Crawl #" + cnt);
@@ -63,7 +55,6 @@ public class Crawler implements Runnable {
                 try {
                     T[i].join();
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Crawler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             try {
@@ -72,7 +63,6 @@ public class Crawler implements Runnable {
                 dbH.Sql("TRUNCATE token;");
                 dbH.Sql("TRUNCATE position;");
             } catch (Exception e) {
-                e.printStackTrace();
             }
 
         }
@@ -109,9 +99,8 @@ public class Crawler implements Runnable {
                     continue;
                 }
 
-            System.out.println(url);
+                System.out.println(url);
             } catch (Exception e) {
-                e.printStackTrace();
             }
             int id = InsertUrlExplored(url);
             try {
@@ -130,7 +119,6 @@ public class Crawler implements Runnable {
                     InsertUrlUnexplored(url_temp);
                 }
             } catch (IOException e) {
-                //    e.printStackTrace();
             }
 
         }
@@ -147,7 +135,6 @@ public class Crawler implements Runnable {
             String sql = "INSERT INTO unsites (URL) VALUES ('" + url + "');";
             dbH.Sql(sql);
         } catch (Exception e) {
-            //e.printStackTrace();
         }
 
     }
@@ -162,12 +149,11 @@ public class Crawler implements Runnable {
             RemoveUrlUnexplored(url.getString("URL"));
             return url.getString("URL");
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return "";
     }
 
-    static  int InsertUrlExplored(String url) {
+    static int InsertUrlExplored(String url) {
 
         try {
             String sql = "INSERT INTO sites (URL) VALUES ('" + url + "');";
@@ -177,7 +163,6 @@ public class Crawler implements Runnable {
             url_r.next();
             return url_r.getInt(1);
         } catch (Exception e) {
-            //e.printStackTrace();
         }
 
         return 0;
@@ -188,7 +173,6 @@ public class Crawler implements Runnable {
             String sql = "DELETE FROM unsites WHERE URL ='" + url + "';";
             dbH.Sql(sql);
         } catch (Exception e) {
-            //e.printStackTrace();
         }
 
     }
@@ -198,7 +182,6 @@ public class Crawler implements Runnable {
             ResultSet st = dbH.SqlQuery("SELECT * FROM sites WHERE URL ='" + url + "';");
             return (st.next());
         } catch (SQLException e) {
-            //e.printStackTrace();
         }
         return false;
     }
