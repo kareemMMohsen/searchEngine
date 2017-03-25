@@ -52,7 +52,7 @@ public class Crawler implements Runnable {
             ++cnt;
             System.out.println("Crawl #" + cnt);
 
-            InsertUrlUnexplored("https://www.nytimes.com/");
+            InsertUrlUnexplored("http://yahoo.com");
             for (int i = 0; i < threadNum; i++) {
 
                 T[i] = new Thread(new Crawler(), Integer.toString(i));
