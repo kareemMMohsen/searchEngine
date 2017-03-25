@@ -1,4 +1,0 @@
-SELECT * FROM `position` WHERE Site_ID=1
-SELECT * FROM `position` WHERE Site_ID=250
-SELECT COUNT(*) FROM `position` where `Position`=1 and `Token_ID`=(SELECT ID FROM `token` where `Token`="empti")
-SELECT URL from sites where ID IN (SELECT Site_ID FROM `position` where `Position`=1 and `Token_ID`=(SELECT ID FROM `token` where `Token`="empti"))
