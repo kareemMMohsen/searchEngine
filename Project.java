@@ -35,11 +35,7 @@ class indexer {
 
                 int tokenID = Integer.parseInt(st.getString("ID"));
                 int position = i + 1;
-                if (PoistionFound(pageID, position)) {
-                    String query = "DELETE FROM `position` WHERE  Site_ID =" + pageID + " AND Position =" + position;
-                    db.Sql(query);
-
-                }
+                
                 String s = "INSERT INTO `position`(`Token_ID`,`Site_ID`,`Position`) VALUES (" + tokenID + "," + pageID + "," + position + ")";
                 db.Sql(s);
 
@@ -49,15 +45,7 @@ class indexer {
         }
     }
 
-    static boolean PoistionFound(int pageID, int position) {
-        try {
-            String query = "SELECT * FROM position WHERE  Site_ID =" + pageID + " AND Position =" + position;
-            ResultSet st = db.SqlQuery(query);
-            return (st.next());
-        } catch (SQLException e) {
-        }
-        return false;
-    }
+
 
     static boolean TokenFound(String list) {
         try {
