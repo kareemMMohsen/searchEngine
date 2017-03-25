@@ -107,10 +107,10 @@ public class Project {
 
     public void run(StringBuilder sb , int ID) {
 
-         
         List<String> list=(new parser()).run(sb) ;
         indexer.Update_tables(list,ID);
-        
+        Runtime.getRuntime().gc();
+
         
     }
 
