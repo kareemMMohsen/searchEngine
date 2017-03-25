@@ -69,22 +69,6 @@ public class Crawler implements Runnable {
         }
     }
 
-    static boolean checkPage(String url) {
-        if (url.indexOf('/', 8) != -1) {
-            url = url.substring(0, url.indexOf('/', 8) - 1);
-        }
-        url = url + "/robots.txt";
-
-        try {
-            Jsoup.connect(url).get();
-        } catch (Exception e) {
-            return false;
-
-        }
-
-        return true;
-    }
-
     static void ExploreUrl() {
         Project p = new Project();
 
