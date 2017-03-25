@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
  */
 public class concatinator {
 
-    public StringBuilder run(StringBuilder sb) {
+    public static StringBuilder run(StringBuilder sb) {
         String html = sb.toString();
         Document doc = Jsoup.parse(html);
         String text = "empty";
