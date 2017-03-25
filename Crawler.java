@@ -23,6 +23,7 @@ public class Crawler implements Runnable {
     static RobotExclusion robotExclusion = new RobotExclusion();
     static int uniqueUrl;
     static int maxUrl, cnt;
+    //  final static Project p = new Project();
 
     @Override
     public void run() {
@@ -76,7 +77,7 @@ public class Crawler implements Runnable {
 
         try {
             Jsoup.connect(url).get();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
 
         }
@@ -84,6 +85,8 @@ public class Crawler implements Runnable {
     }
 
     static void ExploreUrl() {
+        Project p = new Project();
+
         while (true) {
             String url = getNextUnexplored();
             if (Stop()) {
@@ -92,23 +95,22 @@ public class Crawler implements Runnable {
             if (url.equals("")) {
                 continue;
             }
-
             try {
                 URL x = new URL(url);
                 if (UrlFound(url) || (checkPage(url) && !robotExclusion.allows(x, ""))) {
                     continue;
                 }
 
-                System.out.println(url);
             } catch (Exception e) {
             }
             int id = InsertUrlExplored(url);
             try {
                 Document doc = Jsoup.connect(url).get();
                 StringBuilder doc_sb = new StringBuilder(doc.toString());
-                Project p = new Project();
-                p.run(doc_sb, id);
 
+                //         System.out.println(Thread.currentThread().getName() + " started");
+                p.run(doc_sb, id);
+                //       System.out.println(Thread.currentThread().getName() + " ended");
                 Elements links = doc.select("a[href]");
                 for (Element i : links) {
                     String url_temp = i.attr("abs:href");
@@ -120,7 +122,7 @@ public class Crawler implements Runnable {
                 }
             } catch (IOException e) {
             }
-
+            System.out.println(url);
         }
     }
 
@@ -139,32 +141,34 @@ public class Crawler implements Runnable {
 
     }
 
-    static synchronized String getNextUnexplored() {
-        String Sql = "SELECT URL FROM unsites ORDER BY ID LIMIT 1;";
-        try {
-            ResultSet url = dbH.SqlQuery(Sql);
-            if (!url.next()) {
-                return "";
+    static String getNextUnexplored() {
+        synchronized (dbH) {
+            String Sql = "SELECT URL FROM unsites ORDER BY ID LIMIT 1;";
+            try {
+                ResultSet url = dbH.SqlQuery(Sql);
+                if (!url.next()) {
+                    return "";
+                }
+                RemoveUrlUnexplored(url.getString("URL"));
+                return url.getString("URL");
+            } catch (SQLException e) {
             }
-            RemoveUrlUnexplored(url.getString("URL"));
-            return url.getString("URL");
-        } catch (SQLException e) {
         }
         return "";
     }
 
     static int InsertUrlExplored(String url) {
-
-        try {
-            String sql = "INSERT INTO sites (URL) VALUES ('" + url + "');";
-            dbH.Sql(sql);
-            String sql2 = "SELECT ID FROM sites where URL='" + url + "';";
-            ResultSet url_r = dbH.SqlQuery(sql2);
-            url_r.next();
-            return url_r.getInt(1);
-        } catch (Exception e) {
+        synchronized (dbH) {
+            try {
+                String sql = "INSERT INTO sites (URL) VALUES ('" + url + "');";
+                dbH.Sql(sql);
+                String sql2 = "SELECT ID FROM sites where URL='" + url + "';";
+                ResultSet url_r = dbH.SqlQuery(sql2);
+                url_r.next();
+                return url_r.getInt(1);
+            } catch (Exception e) {
+            }
         }
-
         return 0;
     }
 
