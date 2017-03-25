@@ -7,12 +7,14 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import com.trigonic.jrobotx.RobotExclusion;
+import java.net.MalformedURLException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.log4j.BasicConfigurator;
+import java.io.FileNotFoundException;
 //version 5.1
 // Added Robot Exclusion Standard using jrobotx library
 //Edited functions and added new ones
@@ -69,6 +71,17 @@ public class Crawler implements Runnable {
         }
     }
 
+    static boolean robotPage(String url) {
+     if(url.indexOf('/', 8)!=-1)
+         url = url.substring(0, url.indexOf('/', 8)) + "/robots.txt";
+        try {
+            Jsoup.connect(url).get();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     static void ExploreUrl() {
         Project p = new Project();
 
@@ -82,7 +95,7 @@ public class Crawler implements Runnable {
             }
             try {
                 URL x = new URL(url);
-                if (UrlFound(url) || !robotExclusion.allows(x, "")) {
+                if (UrlFound(url) || (robotPage(url) && !robotExclusion.allows(x, ""))) {
                     continue;
                 }
 
