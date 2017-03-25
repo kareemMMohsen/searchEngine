@@ -25,7 +25,7 @@ public class filter {
             "what", "when", "where", "which", "while", "who", "whom", "why",
             "will", "with", "would", "yet", "you", "your");
 
-    public List<String> run(List<String> str) {
+    public static List<String> run(List<String> str) {
         List<String> ret = new ArrayList<>();
         for (int i = 0; i < str.size(); i++) {
             String get = str.get(i);
