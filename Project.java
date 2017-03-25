@@ -44,7 +44,6 @@ class indexer {
                 db.Sql(s);
 
             } catch (SQLException e) {
-                e.printStackTrace();
 
             }
         }
@@ -56,7 +55,6 @@ class indexer {
             ResultSet st = db.SqlQuery(query);
             return (st.next());
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -66,7 +64,6 @@ class indexer {
             ResultSet st = db.SqlQuery("SELECT * FROM token WHERE Token ='" + list + "';");
             return (st.next());
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return false;
     }
