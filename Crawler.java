@@ -117,6 +117,7 @@ public class Crawler implements Runnable {
                         continue;
                     }
                     url_temp = TrimURL(url_temp);
+                    UpdateRank(url_temp);
                     InsertUrlUnexplored(url_temp);
                 }
             } catch (IOException e) {
@@ -124,7 +125,22 @@ public class Crawler implements Runnable {
             System.out.println(url);
         }
     }
-
+    static void UpdateRank(String url){
+        try {
+            String sql = "SELECT rank FROM urlRank WHERE URL='" + url + "';";
+            ResultSet s1 = dbH.SqlQuery(sql);
+            if (s1.next()) {
+            String sql2 = "UPDATE urlRank SET rank=" + s1.getInt("rank")+1+ " WHERE URL='"+url+"';";
+            dbH.Sql(sql2);    
+            }
+            else{
+                String sql2 = "INSERT INTO urlRank (URL, rank) VALUES('" + url + "', 1);";
+                dbH.Sql(sql2);
+            }
+        } catch (Exception e) {
+        }
+        
+    }
     static void InsertUrlUnexplored(String url) {
 
         try {
